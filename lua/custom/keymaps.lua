@@ -24,4 +24,8 @@ vim.keymap.set('n', '<C-z>', 'u', { desc = 'Undo' })
 vim.keymap.set('n', '<C-t>', toggle_terminal, { desc = 'Open Terminal' })
 
 -- vim.api.nvim_command('command! CreateWar lua require("plugins.javaserver").create_war()')
+
+-- Java Server Plugin Keymaps custom made
 vim.api.nvim_command 'command! CreateWar lua require("custom.plugins.javaserver").create_war()'
+vim.api.nvim_command 'command! StartTomcat lua require("custom.plugins.javaserver").startTomcat()'
+vim.api.nvim_command 'command! StopTomcat lua require("custom.plugins.javaserver").stopTomcat()'
