@@ -22,3 +22,6 @@ vim.keymap.set('v', '>', '>gv', { desc = 'Indent right in visual mode' })
 vim.keymap.set('n', '<C-z>', 'u', { desc = 'Undo' })
 
 vim.keymap.set('n', '<C-t>', toggle_terminal, { desc = 'Open Terminal' })
+
+-- vim.api.nvim_command('command! CreateWar lua require("plugins.javaserver").create_war()')
+vim.api.nvim_command 'command! CreateWar lua require("custom.plugins.javaserver").create_war()'

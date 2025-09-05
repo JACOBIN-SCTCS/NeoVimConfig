@@ -113,7 +113,7 @@ function M.setup()
     '-data',
     workspace_dir,
   }
-
+  print(vim.fn.stdpath 'config')
   config.settings = {
     java = {
       references = {
@@ -122,7 +122,7 @@ function M.setup()
       format = {
         enabled = true,
         settings = {
-          url = vim.fn.stdpath 'config' .. '/lang_servers/intellij-java-google-style.xml',
+          url = vim.fn.stdpath 'config' .. '/lang_servers/eclipse-java-google-style.xml',
           profile = 'GoogleStyle',
         },
       },

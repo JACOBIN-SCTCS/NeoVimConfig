@@ -1,4 +1,5 @@
 vim.keymap.set('n', '<A-,>', '<Cmd>BufferPrevious<CR>', { desc = 'Goto Previous Tab' })
 vim.keymap.set('n', '<A-.>', '<Cmd>BufferNext<CR>', { desc = 'Goto Next Tab' })
 vim.keymap.set('n', '<A-c>', '<Cmd>BufferClose<CR>', { desc = 'Close Current tab' })
+vim.keymap.set('n', '<A-/>', '<Cmd>BufferCloseAllButCurrent<CR>', { desc = 'Close all but current' })
 -- vim.keymap.set('n', '<A-q>', ':bd!', { desc = 'Close without saving' })
