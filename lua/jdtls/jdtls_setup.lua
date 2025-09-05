@@ -179,14 +179,14 @@ function M.setup()
         },
         useBlocks = true,
       },
-      -- configuration = {
-      --     runtimes = {
-      --         {
-      --             name = "java-17-openjdk",
-      --             path = "/usr/lib/jvm/default-runtime/bin/java"
-      --         }
-      --     }
-      -- }
+      configuration = {
+        runtimes = {
+          {
+            name = 'JavaSE-24',
+            path = '/opt/homebrew/opt/openjdk@24/libexec/openjdk.jdk/Contents/Home/',
+          },
+        },
+      },
       project = {
         --referencedLibraries = {
         --  get_ws_jars(),
