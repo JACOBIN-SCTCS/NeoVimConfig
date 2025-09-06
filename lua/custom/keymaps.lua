@@ -29,3 +29,4 @@ vim.keymap.set('n', '<C-t>', toggle_terminal, { desc = 'Open Terminal' })
 vim.api.nvim_command 'command! CreateWar lua require("custom.plugins.javaserver").create_war()'
 vim.api.nvim_command 'command! StartTomcat lua require("custom.plugins.javaserver").startTomcat()'
 vim.api.nvim_command 'command! StopTomcat lua require("custom.plugins.javaserver").stopTomcat()'
+vim.api.nvim_command 'command! RunProject lua require("custom.plugins.javaserver").run_project()'

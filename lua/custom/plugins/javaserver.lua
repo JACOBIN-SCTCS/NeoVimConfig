@@ -1,40 +1,76 @@
 local M = {}
 
-M.tomcat_job_id = nil
+local tomcat_job_id = nil
+
+M.tomcatdirectory = '/Users/depressedcoder/Downloads/apache-tomcat-10.1.44/'
+
+local function validateDefaultTomcatApps(app_name)
+  local defaultApps = { 'docs', 'examples', 'host-manager', 'manager', 'ROOT' }
+  for index, app in ipairs(defaultApps) do
+    if app == app_name then
+      return true
+    end
+  end
+  return false
+end
+
+local function scanTomcatWebAppsFolder()
+  local i, t, popen = 0, {}, io.popen
+  local pfile = popen('ls -a -d -1 "' .. M.tomcatdirectory .. 'webapps/"**')
+  if pfile ~= nil then
+    for filename in pfile:lines() do
+      i = i + 1
+      t[i] = filename
+    end
+    pfile:close()
+  end
+  return t
+end
+
+function M.cleanWebAppsFolder()
+  local folders = scanTomcatWebAppsFolder()
+  for _, folder in ipairs(folders) do
+    local foldername = vim.fn.fnamemodify(folder, ':t')
+  end
+end
 
 function M.startTomcat()
-  local tomcatdirectory = '/Users/depressedcoder/Downloads/apache-tomcat-10.1.44/'
   --local bufnr = vim.api.nvim_win_call()
-  local buf = vim.api.nvim_create_buf(true, true)
-  vim.api.nvim_buf_set_name(buf, 'Tomcat Server Logs')
-  vim.api.nvim_set_current_buf(buf)
-  vim.api.nvim_buf_call(buf, function()
-    tomcat_job_id = vim.fn.jobstart('bash ' .. tomcatdirectory .. 'bin/catalina.sh run', {
-      on_stdout = function(_, data, _)
-        if data then
-          vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
-          vim.api.nvim_command 'normal! G'
-        end
-      end,
-      on_stderr = function(_, data, _)
-        if data then
-          vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
-          vim.api.nvim_command 'normal! G'
-        end
-      end,
-    })
-  end)
+  if tomcat_job_id == nil then
+    local buf = vim.api.nvim_create_buf(true, true)
+    vim.api.nvim_buf_set_name(buf, 'Tomcat Server Logs [' .. buf .. ']')
+    vim.api.nvim_set_current_buf(buf)
+    vim.api.nvim_buf_call(buf, function()
+      tomcat_job_id = vim.fn.jobstart('bash ' .. M.tomcatdirectory .. 'bin/catalina.sh run', {
+        on_stdout = function(_, data, _)
+          if data then
+            vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
+            vim.api.nvim_command 'normal! G'
+          end
+        end,
+        on_stderr = function(_, data, _)
+          if data then
+            vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
+            vim.api.nvim_command 'normal! G'
+          end
+        end,
+      })
+    end)
+  end
 end
 
 function M.stopTomcat()
   if tomcat_job_id ~= nil then
     vim.fn.jobstop(tomcat_job_id)
     tomcat_job_id = nil
-    print 'Tomcat Stopped'
+    M.cleanWebAppsFolder()
+    -- print 'Tomcat Stopped'
   end
 end
 
-function M.create_war()
+function M.create_war(runWar)
+  runWar = runWar or false
+
   if vim.fn.isdirectory(vim.fn.getcwd() .. '/' .. 'WebContent') and vim.fn.isdirectory(vim.fn.getcwd() .. '/' .. 'build') then
     local war_file_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t') .. '.war'
 
@@ -45,10 +81,21 @@ function M.create_war()
       {
         on_exit = function(_, code, _)
           print('Create War Exited : Code ' .. code)
+          if runWar and vim.uv.fs_stat(war_file_name) then
+            os.execute('mv ' .. war_file_name .. ' ' .. M.tomcatdirectory .. 'webapps/')
+          end
         end,
       }
     )
+    return war_file_name
   end
+end
+
+function M.run_project()
+  M.startTomcat()
+  M.create_war {
+    runWar = true,
+  }
 end
 
 return M
