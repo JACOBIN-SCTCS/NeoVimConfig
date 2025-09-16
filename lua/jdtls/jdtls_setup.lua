@@ -30,9 +30,9 @@ function M.setup()
 
 	local path_to_config = nil
 	if vim.fn.has("macunix") == 1 then
-		path_to_config = path_to_jdtls .. "/config_ss_win"
-	else
 		path_to_config = path_to_jdtls .. "/config_mac_arm"
+	else
+		path_to_config = path_to_jdtls .. "/config_ss_win"
 	end
 
 	local root_markers = { ".git", "mvnw", "gradlew", "pom.xml", "build.gradle", ".classpath", ".project" }
