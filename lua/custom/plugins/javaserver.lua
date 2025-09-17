@@ -41,8 +41,20 @@ function M.cleanWebAppsFolder()
   end
 end
 
-function M.startTomcat()
+function M.startTomcat(debug)
   --local bufnr = vim.api.nvim_win_call()
+
+  debug = debug or false
+
+  local runcommand = nil
+
+  if debug then
+    runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina.sh jpda run'
+  else
+    runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina.sh run'
+  end
+
+  --print(runcommand)
   if tomcat_job_id == nil then
     local buf = nil
     if buffer_id ~= nil and vim.api.nvim_buf_is_loaded(buffer_id) then
@@ -59,7 +71,7 @@ function M.startTomcat()
 
     vim.api.nvim_set_current_buf(buf)
     vim.api.nvim_buf_call(buf, function()
-      tomcat_job_id = vim.fn.jobstart('bash ' .. M.tomcatdirectory .. 'bin/catalina.sh run', {
+      tomcat_job_id = vim.fn.jobstart(runcommand, {
 
         on_stdout = function(_, data, _)
           if data then
@@ -90,6 +102,7 @@ end
 function M.stopTomcat()
   if tomcat_job_id ~= nil then
     vim.fn.jobstop(tomcat_job_id)
+    vim.fn.jobwait({ tomcat_job_id }, 100)
     tomcat_job_id = nil
     M.cleanWebAppsFolder()
     -- print 'Tomcat Stopped'
@@ -108,7 +121,7 @@ function M.create_war(runWar)
         .. ' -C WebContent/ .; rm -rf WebContent/WEB-INF/classes; rm -rf WebContent/WEB-INF/src',
       {
         on_exit = function(_, code, _)
-          print('Create War Exited : Code ' .. code)
+          -- print('Create War Exited : Code ' .. code)
           if runWar and vim.uv.fs_stat(war_file_name) then
             os.execute('mv ' .. war_file_name .. ' ' .. M.tomcatdirectory .. 'webapps/')
             if buffer_id ~= nil then
@@ -123,12 +136,21 @@ function M.create_war(runWar)
 end
 
 function M.run_project()
+  M.stopTomcat()
   M.startTomcat()
   M.create_war {
     runWar = true,
   }
 end
 
-function M.debug_project() end
+function M.debug_project()
+  M.stopTomcat()
+  M.startTomcat {
+    debug = true,
+  }
+  M.create_war {
+    runWar = true,
+  }
+end
 
 return M

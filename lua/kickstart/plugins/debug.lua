@@ -76,6 +76,13 @@ return {
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      '<leader>du',
+      function()
+        require('dapui').close()
+      end,
+      desc = 'Debug: Close Session',
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -136,6 +143,22 @@ return {
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
+    dap.configurations.java = {
+      {
+        type = 'java',
+        request = 'attach',
+        name = 'Debug (Attach) - Remote (5005) ',
+        hostName = '127.0.0.1',
+        port = 5005,
+      },
+      {
+        type = 'java',
+        request = 'attach',
+        name = 'Debug (Attach) - Remote (8000)',
+        hostName = '127.0.0.1',
+        port = 8000,
+      },
+    }
     -- Install golang specific config
     require('dap-go').setup {
       delve = {
