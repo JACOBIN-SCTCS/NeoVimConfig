@@ -27,7 +27,7 @@ function M.setup()
     java_executable = 'C:\\Program Files\\Java\\jdk-21\\bin\\java'
     runtimes = {
       {
-        name = 'JavaSE-8',
+        name = 'JavaSE-1.8',
         path = 'C:\\Program Files\\Java\\jdk-1.8',
       },
       {
