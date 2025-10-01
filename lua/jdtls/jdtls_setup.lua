@@ -24,15 +24,15 @@ function M.setup()
       },
     }
   else
-    java_executable = 'C:\\Program Files\\Java\\jdk-21\\bin\\java'
+    java_executable = 'C:/Program Files/Java/jdk-21/bin/java'
     runtimes = {
       {
         name = 'JavaSE-1.8',
-        path = 'C:\\Program Files\\Java\\jdk-1.8',
+        path = 'C:/Program Files/Java/jdk-1.8',
       },
       {
         name = 'JavaSE-21',
-        path = 'C:\\Program Files\\Java\\jdk-21',
+        path = 'C:/Program Files/Java/jdk-21',
       },
     }
   end

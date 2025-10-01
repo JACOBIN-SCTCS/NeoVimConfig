@@ -12,7 +12,7 @@ local WINDOWS_IDENTIFIER = 'Windows_NT'
 if vim.loop.os_uname().sysname == MACOS_IDENTIFIER then
   M.tomcatdirectory = '/Users/depressedcoder/Downloads/apache-tomcat-10.1.44/'
 elseif vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
-  M.tomcatdirectory = 'C:\\Users\\X\\Downloads\\apache-tomcat-10.1.46\\apache-tomcat-10.1.46'
+  M.tomcatdirectory = 'C:/Users/X/Downloads/apache-tomcat-10.1.46/apache-tomcat-10.1.46'
 end
 
 local function validateDefaultTomcatApps(app_name)
@@ -67,15 +67,24 @@ function M.startTomcat(debug)
   local script_suffix = '.sh'
 
   if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
+    vim.env.CATALINA_HOME = M.tomcatdirectory
     script_suffix = '.bat'
   else
     script_suffix = '.sh'
   end
 
   if debug then
-    runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' jpda run'
+    if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
+      runcommand = M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' jpda run'
+    elseif vim.loop.os_uname().sysname == MACOS_IDENTIFIER then
+      runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' jpda run'
+    end
   else
-    runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' run'
+    if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
+      runcommand = M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' run'
+    elseif vim.loop.os_uname().sysname == MACOS_IDENTIFIER then
+      runcommand = 'bash ' .. M.tomcatdirectory .. 'bin/catalina' .. script_suffix .. ' run'
+    end
   end
 
   --print(runcommand)
