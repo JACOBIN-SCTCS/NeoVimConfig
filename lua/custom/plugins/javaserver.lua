@@ -6,6 +6,8 @@ local buffer_id = nil
 local MACOS_IDENTIFIER = "Darwin"
 local WINDOWS_IDENTIFIER = "Windows_NT"
 
+local logger = require("custom.logger").create_logger("javaserver_logs")
+
 -- windows equivalent of listing  dir /a /b
 -- Identifying the OS : print(vim.loop.os_uname().sysname)
 --
@@ -32,13 +34,14 @@ local function scanTomcatWebAppsFolder()
 
 	if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
 		--pfile = popen("dir /a /b " .. M.tomcatdirectory .. "/webapps/")
-		pfile = popen(
-			'for /f "delims=" %i in (\'dir /a /b'
-				.. M.tomcatdirectory
-				.. "\\webapps') do @echo "
-				.. M.tomcatdirectory
-				.. "\\webapps\\%i"
-		)
+
+		local enumerationcommand = 'for /f "delims=" %i in (\'dir /a /b '
+			.. M.tomcatdirectory
+			.. "\\webapps') do @echo "
+			.. M.tomcatdirectory
+			.. "\\webapps\\%i"
+		--logger.info(enumerationcommand)
+		pfile = popen(enumerationcommand)
 	elseif vim.loop.os_uname().sysname == MACOS_IDENTIFIER then
 		pfile = popen('ls -a -d -1 "' .. M.tomcatdirectory .. '/webapps/"**')
 	end
@@ -48,6 +51,7 @@ local function scanTomcatWebAppsFolder()
 		for filename in pfile:lines() do
 			i = i + 1
 			t[i] = filename
+			--logger.info(filename)
 		end
 		pfile:close()
 	end
@@ -59,6 +63,7 @@ function M.cleanWebAppsFolder()
 	for _, folder in ipairs(folders) do
 		local foldername = vim.fn.fnamemodify(folder, ":t")
 		if not validateDefaultTomcatApps(foldername) then
+			--logger.info("Deleting " .. folder)
 			vim.fs.rm(folder, {
 				recursive = true,
 			})
