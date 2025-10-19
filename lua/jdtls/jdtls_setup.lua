@@ -29,6 +29,7 @@ function M.setup()
 			{
 				name = "JavaSE-1.8",
 				path = "C:\\Program Files\\Java\\jdk-1.8",
+				default = true,
 			},
 			{
 				name = "JavaSE-21",
@@ -62,15 +63,15 @@ function M.setup()
 	local project_name = vim.fn.fnamemodify(root_dir, ":p:h:t")
 	-- Workspace Directory
 
-	local metadata_directoryname = ".metadata"
-	local ws_directory = vim.fn.fnamemodify(vim.fn.getcwd(), ":h")
+	--local metadata_directoryname = ".metadata"
+	--local ws_directory = vim.fn.fnamemodify(vim.fn.getcwd(), ":h")
 
-	local ws_full_path = ws_directory .. "/" .. metadata_directoryname
+	--local ws_full_path = ws_directory .. "/" .. metadata_directoryname
 
 	local workspace_dir = home .. "/.cache/jdtls/workspace" .. project_name
-	if vim.fn.isdirectory(ws_full_path) then
-		workspace_dir = ws_directory
-	end
+	--if vim.fn.isdirectory(ws_full_path) then
+	--	workspace_dir = ws_directory
+	--end
 
 	--local path_to_config = path_to_jdtls .. '/config_linux'
 	local lombok_path = path_to_jdtls .. "/lombok.jar"
