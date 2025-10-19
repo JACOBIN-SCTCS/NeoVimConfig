@@ -47,6 +47,10 @@ require("lazy").setup({
 
 	require("kickstart.plugins.catppuccin"),
 
+	--require("kickstart.plugins.nightfox"),
+	--require("kickstart.plugins.nordic"),
+	require("kickstart.plugins.kanagawa"),
+
 	-- require 'kickstart.plugins.dashboard',
 
 	require("kickstart.plugins.snacks"),
