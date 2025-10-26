@@ -206,9 +206,14 @@ function M.syncFiles(fileType)
 				.. M.tomcatdirectory
 				.. "\\webapps\\"
 				.. M.app_name
-				.. " /MIR /E /XD 'WEB-INF' 'META-INF'"
+				.. " /E /XO /XD 'WEB-INF' 'META-INF'"
 		elseif fileType == "B" then
-			sync_command = ""
+			sync_command = "robocopy build\\classes "
+				.. M.tomcatdirectory
+				.. "\\webapps\\"
+				.. M.app_name
+				.. "\\WEB-INF\\classes"
+				.. " /E /XO "
 		end
 	else
 		if fileType == "F" then
