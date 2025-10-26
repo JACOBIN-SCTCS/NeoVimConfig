@@ -166,7 +166,8 @@ function M.create_war(runWar)
 	--local war_file_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") .. ".war"
 
 	if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
-		command = "xcopy build WebContent\\WEB-INF /s /e /h /I & xcopy src\\* WebContent\\WEB-INF\\classes /s /e /h /I & jar -cvf "
+		print("Reached the xcopy command")
+		command = "xcopy build WebContent\\WEB-INF /s /e /h /I /Y & xcopy src\\* WebContent\\WEB-INF\\classes /s /e /h /I /Y & jar -cvf "
 			.. M.war_file_name
 			.. " -C WebContent/ . &  rmdir WebContent\\WEB-INF\\classes /s /q "
 		move_command = "move /y " .. M.war_file_name .. " " .. M.tomcatdirectory .. "\\webapps\\"

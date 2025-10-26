@@ -29,6 +29,10 @@ function M.setup()
 			{
 				name = "JavaSE-1.8",
 				path = "C:\\Program Files\\Java\\jdk-1.8",
+			},
+			{
+				name = "JavaSE-1.8",
+				path = "C:\\Program Files\\Java\\jdk1.8.0_181",
 				default = true,
 			},
 			{
