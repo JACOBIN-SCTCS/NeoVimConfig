@@ -31,3 +31,5 @@ vim.api.nvim_command 'command! StartTomcat lua require("custom.plugins.javaserve
 vim.api.nvim_command 'command! StopTomcat lua require("custom.plugins.javaserver").stopTomcat()'
 vim.api.nvim_command 'command! RunProject lua require("custom.plugins.javaserver").run_project()'
 vim.api.nvim_command 'command! DebugProject lua require("custom.plugins.javaserver").debug_project()'
+vim.api.nvim_command('command! FrontendSync lua require("custom.plugins.javaserver").sync_frontendfiles()')
+vim.api.nvim_command('command! BackendSync lua require("custom.plugins.javaserver").sync_backendfiles()')

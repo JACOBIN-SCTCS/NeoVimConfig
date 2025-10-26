@@ -8,6 +8,9 @@ local WINDOWS_IDENTIFIER = "Windows_NT"
 
 local logger = require("custom.logger").create_logger("javaserver_logs")
 
+M.app_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+M.war_file_name = M.app_name .. ".war"
+
 -- windows equivalent of listing  dir /a /b
 -- Identifying the OS : print(vim.loop.os_uname().sysname)
 --
@@ -122,13 +125,13 @@ function M.startTomcat(debug)
 				on_stdout = function(_, data, _)
 					if data then
 						vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
-						vim.api.nvim_command("normal! G")
+						--vim.api.nvim_command("normal! G")
 					end
 				end,
 				on_stderr = function(_, data, _)
 					if data then
 						vim.api.nvim_buf_set_lines(buf, -1, -1, false, data)
-						vim.api.nvim_command("normal! G")
+						--vim.api.nvim_command("normal! G")
 					end
 				end,
 			})
@@ -160,18 +163,18 @@ function M.create_war(runWar)
 
 	local command = ""
 	local move_command = nil
-	local war_file_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") .. ".war"
+	--local war_file_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t") .. ".war"
 
 	if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
 		command = "xcopy build WebContent\\WEB-INF /s /e /h /I & xcopy src\\* WebContent\\WEB-INF\\classes /s /e /h /I & jar -cvf "
-			.. war_file_name
+			.. M.war_file_name
 			.. " -C WebContent/ . &  rmdir WebContent\\WEB-INF\\classes /s /q "
-		move_command = "move /y " .. war_file_name .. " " .. M.tomcatdirectory .. "\\webapps\\"
+		move_command = "move /y " .. M.war_file_name .. " " .. M.tomcatdirectory .. "\\webapps\\"
 	else
 		command = "cp -r build/ WebContent/WEB-INF ; cp -R src/* WebContent/WEB-INF/classes ; jar -cvf "
-			.. war_file_name
+			.. M.war_file_name
 			.. " -C WebContent/ .; rm -rf WebContent/WEB-INF/classes "
-		move_command = "mv " .. war_file_name .. " " .. M.tomcatdirectory .. "webapps/"
+		move_command = "mv " .. M.war_file_name .. " " .. M.tomcatdirectory .. "webapps/"
 	end
 
 	if
@@ -181,7 +184,7 @@ function M.create_war(runWar)
 		vim.fn.jobstart(command, {
 			on_exit = function(_, code, _)
 				-- print('Create War Exited : Code ' .. code)
-				if runWar and vim.uv.fs_stat(war_file_name) then
+				if runWar and vim.uv.fs_stat(M.war_file_name) then
 					os.execute(move_command)
 					if buffer_id ~= nil then
 						vim.api.nvim_set_current_buf(buffer_id)
@@ -189,8 +192,48 @@ function M.create_war(runWar)
 				end
 			end,
 		})
-		return war_file_name
+		return M.war_file_name
 	end
+end
+
+function M.syncFiles(fileType)
+	local sync_command = ""
+
+	print("FileType Parameter " .. fileType)
+	if vim.loop.os_uname().sysname == WINDOWS_IDENTIFIER then
+		if fileType == "F" then
+			sync_command = "robocopy WebContent "
+				.. M.tomcatdirectory
+				.. "\\webapps\\"
+				.. M.app_name
+				.. " /MIR /E /XD 'WEB-INF' 'META-INF'"
+		elseif fileType == "B" then
+			sync_command = ""
+		end
+	else
+		if fileType == "F" then
+			print("Frontend sync called")
+			sync_command = "rsync -a --exclude='WEB-INF' --exclude='META-INF' WebContent/ "
+				.. M.tomcatdirectory
+				.. "/webapps/"
+				.. M.app_name
+		elseif fileType == "B" then
+			sync_command = "rsync -a  build/classes/* "
+				.. M.tomcatdirectory
+				.. "/webapps/"
+				.. M.app_name
+				.. "/"
+				.. "WEB-INF/classes"
+		end
+	end
+	vim.fn.jobstart(sync_command, {
+		on_stdout = function(_, data, _)
+			-- print("Syncing static files completed; payload = " .. vim.inspect(data))
+		end,
+		on_stderr = function(_, data, _)
+			--print("Unexpected error in syncing files; payload = " .. vim.inspect(data))
+		end,
+	})
 end
 
 function M.run_project()
@@ -209,6 +252,14 @@ function M.debug_project()
 	M.create_war({
 		runWar = true,
 	})
+end
+
+function M.sync_frontendfiles()
+	M.syncFiles("F")
+end
+
+function M.sync_backendfiles()
+	M.syncFiles("B")
 end
 
 return M
