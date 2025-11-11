@@ -228,9 +228,9 @@ return {
         --
 
         -- Custom added for my languages
-        --jdtls = {},
+        jdtls = {},
         --java_test = {},
-        --java_debug_adapter = {},
+        --java-debug-adapter = {},
         --pyright = {},
         --python_lsp_server = {},
         pylsp = {},

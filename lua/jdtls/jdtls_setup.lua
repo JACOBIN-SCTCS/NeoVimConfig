@@ -8,7 +8,7 @@ function M.setup()
 	local home = nil
 	local path_to_mason_packages = nil
 
-	local equinox_launcher_name = "org.eclipse.equinox.launcher_1.7.0.v20250519-0528.jar"
+	local equinox_launcher_name = "org.eclipse.equinox.launcher_1.7.100.v20251014-1222.jar"
 
 	local runtimes = {}
 
