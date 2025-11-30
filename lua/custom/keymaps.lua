@@ -33,3 +33,13 @@ vim.api.nvim_command 'command! RunProject lua require("custom.plugins.javaserver
 vim.api.nvim_command 'command! DebugProject lua require("custom.plugins.javaserver").debug_project()'
 vim.api.nvim_command('command! FrontendSync lua require("custom.plugins.javaserver").sync_frontendfiles()')
 vim.api.nvim_command('command! BackendSync lua require("custom.plugins.javaserver").sync_backendfiles()')
+
+-- Persistence nvim
+-- load the session for the current directory
+vim.keymap.set("n", "<leader>qs", function() require("persistence").load() end)
+-- select a session to load
+vim.keymap.set("n", "<leader>qS", function() require("persistence").select() end)
+-- load the last session
+vim.keymap.set("n", "<leader>ql", function() require("persistence").load({ last = true }) end)
+-- stop Persistence => session won't be saved on exit
+vim.keymap.set("n", "<leader>qd", function() require("persistence").stop() end)
