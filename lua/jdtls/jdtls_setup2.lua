@@ -29,10 +29,6 @@ else
 	M.runtimes = {
 		{
 			name = "JavaSE-1.8",
-			path = "C:\\Program Files\\Java\\jdk-1.8",
-		},
-		{
-			name = "JavaSE-1.8",
 			path = "C:\\Program Files\\Java\\jdk1.8.0_181",
 			default = true,
 		},
@@ -77,6 +73,18 @@ function M.get_workspace()
 	local result = part1 .. "_" .. part2
 	local workspace = vim.fs.joinpath(cache_path, "workspace" .. result)
 	return workspace
+end
+
+function M.getJarFiles()
+	local webcontent_jars = vim.fs.joinpath(vim.fn.getcwd(), "WebContent", "WEB-INF", "lib")
+	if vim.fn.isdirectory(webcontent_jars) then
+		local jarfilepath = vim.fs.joinpath(vim.fn.getcwd(), "WebContent", "WEB-INF", "lib", "*.jar")
+		local jarfiles = vim.fn.split(vim.fn.glob(jarfilepath, true), "\n")
+		print(type(jarfiles))
+		return jarfiles
+	else
+		return {}
+	end
 end
 
 function M.setup_jdtls()
@@ -257,7 +265,7 @@ function M.setup_jdtls()
 				--  get_ws_jars(),
 				-- vim.split(vim.fn.glob(root_dir .. '/src/main/webapp/WEB-INF/lib/*.jar')),
 				--},
-				-- referencedLibraries = get_ws_jars(),
+				--referencedLibraries = M.getJarFiles(),
 			},
 			-- enable code lens in the lsp
 			referencesCodeLens = {
