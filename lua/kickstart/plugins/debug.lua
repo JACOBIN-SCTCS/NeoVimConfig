@@ -158,6 +158,13 @@ return {
         hostName = '127.0.0.1',
         port = 8000,
       },
+      {
+        type = 'java',
+        request = 'attach',
+        name = 'Debug (Attach) - Remote (8787)',
+        hostName = '127.0.0.1',
+        port = 8787,
+      },
     }
     -- Install golang specific config
     require('dap-go').setup {

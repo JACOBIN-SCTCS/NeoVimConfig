@@ -247,7 +247,7 @@ function M.setup()
 	config.on_attach = on_attach
 	config.capabilities = capabilities
 	config.on_init = function(client, _)
-		client.notify("workspace/didChangeConfiguration", { settings = config.settings })
+		client:notify("workspace/didChangeConfiguration", { settings = config.settings })
 	end
 
 	local extendedClientCapabilities = require("jdtls").extendedClientCapabilities

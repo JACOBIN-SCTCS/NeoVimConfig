@@ -30,11 +30,11 @@ else
 		{
 			name = "JavaSE-1.8",
 			path = "C:\\Program Files\\Java\\jdk1.8.0_181",
-			default = true,
 		},
 		{
 			name = "JavaSE-21",
 			path = "C:\\Program Files\\Java\\jdk-21",
+			default = true,
 		},
 	}
 end
@@ -157,7 +157,7 @@ function M.setup_jdtls()
 			vim.lsp.buf.format()
 		end, { desc = "Format current buffer with LSP" })
 
-		vim.lsp.codelens.refresh()
+		vim.lsp.codelens.enable(true, { bufnr=bufnr })
 
 		require("lsp_signature").on_attach({
 			bind = true,
@@ -171,7 +171,7 @@ function M.setup_jdtls()
 		vim.api.nvim_create_autocmd("BufWritePost", {
 			pattern = { "*.java" },
 			callback = function()
-				local _, _ = pcall(vim.lsp.codelens.refresh)
+				local _, _ = pcall(vim.lsp.codelens.enable(true, { bufnr = bufnr }))
 			end,
 		})
 	end
@@ -285,7 +285,7 @@ function M.setup_jdtls()
 
 	--- On Init ----------------------------
 	local on_init = function(client, _)
-		client.notify("workspace/didChangeConfiguration", { settings = settings })
+		client:notify("workspace/didChangeConfiguration", { settings = settings })
 	end
 
 	--- Config ---------------------------------
