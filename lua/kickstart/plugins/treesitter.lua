@@ -80,6 +80,8 @@ return {
           end
         end,
       })
+
+      vim.treesitter.language.register('html',{'jsp'})
     end,
   },
 }

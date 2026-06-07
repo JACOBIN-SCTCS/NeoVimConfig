@@ -233,7 +233,7 @@ return {
         --java-debug-adapter = {},
         --pyright = {},
         --python_lsp_server = {},
-        pylsp = {},
+        zuban = {},
         html = {},
         cssls = {},
         lemminx = {},
